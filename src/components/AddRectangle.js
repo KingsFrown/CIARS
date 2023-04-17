@@ -17,6 +17,7 @@ class AddRectangle extends React.Component {
             <select name='module' id='module' required onChange={(e) => this.setState({name: e.target.value})}>
               <option value='Data'>Data</option>
               <option value='Logistic Regression'>Logistic Regression</option>
+              <option value='Result'>Result</option>
             </select>
             <button type='button' onClick={() => {
               this.myForm.reset()
