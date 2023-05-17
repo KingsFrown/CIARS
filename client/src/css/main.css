@@ -122,15 +122,5 @@ form select {
     transform: scale(1.01);
 }
 
-.plot {
-    transform: scale(1);
-    /* position: absolute;
-    top: 100px;
-    left: 0px; */
-}
-
-.plotLR {
-    transform: scale(1);
-}
 
 

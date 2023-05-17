@@ -161,28 +161,30 @@ def tune_model_hyperparameters(data, model=Ridge(), cv=5):
     return fig
 
 
-@app.route("/data", methods=['GET', 'POST'])
+@app.route("/linr", methods=['GET', 'POST'])
 def accuaract():
-    global uploaded_file,mae,mse,graph
+    '''Функция выводит ошибки'''
     uploaded_file = request.get_json()['file']
     if uploaded_file != '':
         uploaded_file = pd.read_csv(uploaded_file)
-        graph,mae,mse=linear_regression(pd.read_csv(uploaded_file), [request.get_json()["x_column"],request.get_json()["x_column"]],request.get_json()["y_column"])
+        graph,mae,mse=linear_regression(uploaded_file, [request.get_json()["x_column"],request.get_json()["x_column"]],request.get_json()["y_column"])
         return{'mae':mae,
                "mse":mse}
 
 
 @app.route('/plotlinr', methods=['GET', 'POST'])
 def graph():
+        '''Функция выводит график линейной регрессии'''
         uploaded_file = request.get_json()['file']
         if uploaded_file != '':
             uploaded_file = pd.read_csv(uploaded_file)
-            graph,mae,mse=linear_regression(pd.read_csv(uploaded_file), [request.get_json()["x_column"],request.get_json()["x_column"]],request.get_json()["y_column"])
-            return plotly.to_json(graph,pretty=True)
+            graph,mae,mse=linear_regression(uploaded_file, [request.get_json()["x_column"],request.get_json()["x_column"]],request.get_json()["y_column"])
+            return plotly.io.to_json(graph,pretty=True)
 
 
 @app.route('/plotLR', methods=['GET', 'POST'])
 def graph1():
+    '''Функция выводит график логистической регрессии'''
     uploaded_file = request.get_json()['file']
     if uploaded_file != '':
         fig,accuaracy,precisiom,recall,f1= logistic_regression(pd.read_csv(uploaded_file), [request.get_json()["x_column"],request.get_json()["x_column"]],request.get_json()["y_column"])
@@ -192,6 +194,7 @@ def graph1():
 
 @app.route('/LR',methods=['GET','POST'])
 def Log():
+    '''Функция выводит ошибки логистической регрессии'''
     uploaded_file = request.get_json()['file']
     if uploaded_file!='':
         uploaded_file=pd.read_csv(uploaded_file)
@@ -203,24 +206,26 @@ def Log():
             "F1_score":f1
 
         }
-@app.route('/k_means')
+@app.route('/k_means',methods=['GET','POST'])
 def k_graph():
-    uploaded_file,x_column,y_column=request.get_json()['file'],request.get_json()["x_column"],request.get_json()["y_column"]
+    uploaded_file,x_column,y_column=pd.read_csv(request.get_json()['file']),request.get_json()["x_column"],request.get_json()["y_column"]
     labels = k_means(uploaded_file, [x_column,y_column], n_clusters=2)
     uploaded_file ['cluster'] = labels
-    graph=px.scatter(uploaded_file[x_column],uploaded_file[y_column],c=uploaded_file['cluster'])
+    graph=px.scatter(x=uploaded_file[x_column],y=uploaded_file[y_column],color=uploaded_file['cluster'])
     return plotly.io.to_json(graph,pretty=True)
-if __name__ == '__main__':
-    app.run(debug=True)
-@app.route('/anomaly')
+
+@app.route('/anomaly',methods=['GET','POST'])
 def anomaly():
-    uploaded_file=request.json()['file']
-    y_column,x_column=request.json()['y_column,x_column']
+    uploaded_file=pd.read_csv(request.get_json()['file'])
+    y_column,x_column=request.get_json()['y_column'], request.get_json()['x_column']
     fig=anomaly_detection(uploaded_file,[x_column,y_column])
     return plotly.io.to_json(fig,pretty=True)
 
-@app.route('/tune_model')
+@app.route('/tune_model',methods=['GET','POST'])
 def tune():
-    uploaded_file=request.json()['file']
+    uploaded_file=pd.read_csv(request.get_json()['file'])
     graph=tune_model_hyperparameters(uploaded_file)
     return plotly.io.to_json(graph)
+
+if __name__ == '__main__':
+    app.run(debug=True)

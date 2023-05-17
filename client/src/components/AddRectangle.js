@@ -16,7 +16,13 @@ class AddRectangle extends React.Component {
             <label htmlFor="module">Выберите модуль:</label>
             <select name='module' id='module' required onChange={(e) => this.setState({name: e.target.value})}>
               <option value='Data'>Data</option>
-              <option value='Logistic Regression'>Logistic Regression</option>
+              <optgroup label='Methods'>
+                <option value='Logistic Regression'>Logistic Regression</option>
+                <option value='Linear Regression'>Linear Regression</option>
+                <option value='K Means'>K Means</option>
+                <option value='Anomaly'>Anomaly</option>
+                <option value='Tune Model'>Tune Model</option>
+              </optgroup>
               <option value='Result'>Result</option>
             </select>
             <button type='button' onClick={() => {
